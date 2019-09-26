@@ -25,9 +25,10 @@ struct Lines
 };
 
 int buptStrcmp(const char *s1, const char *s2) {
-    while ((result.cmpNum++ + 1) && *s1 && (*s1 == *s2)) {
+    while ((result.cmpNum++) && *s1 && (*s1 == *s2)) {
         s1++;
         s2++;
+        result.cmpNum++;
     }
     return *(const unsigned char *) s1 - *(const unsigned char *) s2;
 }
@@ -51,7 +52,7 @@ void clearSuffix(char* line)
 int main() {
     FILE *fpPattern = fopen("patterns-127w.txt", "r");
     FILE *fpWords = fopen("words-98w.txt", "r");
-    FILE *fpResults = fopen("result.txt", "a");
+    FILE *fpResults = fopen("./array_search/result.txt", "a");
 
     if (fpPattern == NULL || fpWords == NULL || fpResults == NULL)
     {
@@ -60,12 +61,10 @@ int main() {
     }
 
     Lines *patterns = (Lines*) buptMalloc(128 * 1 * 1270688);
-    Lines *words = (Lines*) buptMalloc(128 * 1 * 986005);
     int i = 0;
-    int j = 0;
+    int j = 986005;
     char patternLine[128];
     char wordLine[128];
-    printf("checkpoint-1");
     while (!feof(fpPattern))
     {
         fgets(patternLine, 128, fpPattern);
@@ -73,26 +72,19 @@ int main() {
         memccpy(patterns[i].line, patternLine, 0, 128);
         i++;
     }
-    printf("checkpoint-2");
-    while (!feof(fpWords))
+    for (int m = 0; m < j; m++) // each word
     {
         fgets(wordLine, 128, fpWords);
         clearSuffix(wordLine);
-        memccpy(words[j].line, wordLine, 0, 128);
-        j++;
-    }
-    printf("checkpoint-3");
-    for (int m = 0; m < j; m++) // each word
-    {
         int isYes = -1;
         for (int n = 0; n < i; n++) { // each pattern
-            if (buptStrcmp(patterns[n].line, words[m].line) == 0)
+            if (buptStrcmp(patterns[n].line, wordLine) == 0)
             {
                 result.correctWordNum++;
-                fprintf(fpResults, "%s", words[m].line);
+                fprintf(fpResults, "%s", wordLine);
                 fprintf(fpResults, " ");
                 fprintf(fpResults, "yes\n");
-                printf("%s", words[m].line);
+                printf("%s", wordLine);
                 printf(" ");
                 printf("yes\n");
                 isYes = 1;
@@ -100,23 +92,18 @@ int main() {
         }
         if (isYes < 0)
         {
-            fprintf(fpResults, "%s", words[m].line);
+            fprintf(fpResults, "%s", wordLine);
             fprintf(fpResults, " ");
             fprintf(fpResults, "no\n");
-            printf("%s", words[m].line);
+            printf("%s", wordLine);
             printf(" ");
             printf("no\n");
         }
     }
-    fprintf(fpResults, "%d %d %d %d", result.memOccupy, result.cmpNum, result.totalWordNum, result.correctWordNum);
-    printf("%d %d %d %d", result.memOccupy, result.cmpNum, result.totalWordNum, result.correctWordNum);
     result.totalWordNum = j;
+    fprintf(fpResults, "%d %d %d %d", result.memOccupy / 1024, result.cmpNum, result.totalWordNum, result.correctWordNum);
     fclose(fpPattern);
     fclose(fpWords);
     fclose(fpResults);
-    printf("mem Occupy: %d\n", result.memOccupy / 1024);
-    printf("cmp Num: %d\n", result.cmpNum);
-    printf("correct Num: %d\n", result.correctWordNum);
-    printf("total Num: %d\n", result.totalWordNum);
     return 0;
 }
