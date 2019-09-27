@@ -25,6 +25,10 @@ struct Lines
 };
 
 int buptStrcmp(const char *s1, const char *s2) {
+    if (strlen(s1) != strlen(s2))
+    {
+        return -1;
+    }
     while ((result.cmpNum++) && *s1 && (*s1 == *s2)) {
         s1++;
         s2++;
@@ -84,9 +88,6 @@ int main() {
                 fprintf(fpResults, "%s", wordLine);
                 fprintf(fpResults, " ");
                 fprintf(fpResults, "yes\n");
-                printf("%s", wordLine);
-                printf(" ");
-                printf("yes\n");
                 isYes = 1;
             }
         }
@@ -95,9 +96,6 @@ int main() {
             fprintf(fpResults, "%s", wordLine);
             fprintf(fpResults, " ");
             fprintf(fpResults, "no\n");
-            printf("%s", wordLine);
-            printf(" ");
-            printf("no\n");
         }
     }
     result.totalWordNum = j;

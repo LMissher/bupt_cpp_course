@@ -9,3 +9,5 @@ include_directories(
 )
 
 add_executable(array_search  array_search/main.c)
+add_executable(hashtable_search  hashtable_search/main.c)
+add_executable(bf_search  bf_search/main.c)
