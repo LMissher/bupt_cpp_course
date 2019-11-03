@@ -249,7 +249,7 @@ int bloom_add(struct bloom *bloom, const void *buffer, int len)
 int main()
 {
   struct bloom bloom;
-  bloom_init(&bloom, 18235300, 0.001);
+  bloom_init(&bloom, 1270688, 0.001);
   FILE *fpPattern = fopen("patterns-127w.txt", "r");
   FILE *fpWords = fopen("words-98w.txt", "r");
   FILE *fpResults = fopen("./bf_search/result.txt", "a");
@@ -266,7 +266,7 @@ int main()
     clearSuffix(patternLine);
     bloom_add(&bloom, patternLine, strlen(patternLine));
   }
-  int j = 986005;
+  int j = 986004;
   for (int m = 0; m < j; m++) // each word
   {
     fgets(wordLine, 128, fpWords);

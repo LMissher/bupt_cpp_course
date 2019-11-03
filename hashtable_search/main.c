@@ -228,7 +228,7 @@ int main()
         clearSuffix(patternLine);
         DictInsert(d, patternLine);
     }
-    int j = 986005;
+    int j = 986004;
     for (int m = 0; m < j; m++) // each word
     {
         fgets(wordLine, 128, fpWords);

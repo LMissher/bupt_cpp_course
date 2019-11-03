@@ -66,7 +66,7 @@ int main() {
 
     Lines *patterns = (Lines*) buptMalloc(128 * 1 * 1270688);
     int i = 0;
-    int j = 986005;
+    int j = 986004;
     char patternLine[128];
     char wordLine[128];
     while (!feof(fpPattern))
