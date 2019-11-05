@@ -317,9 +317,7 @@ int PATTERN_WORDS = 1270688;
 int main()
 {
     FILE* fpPattern = fopen("./patterns-127w.txt", "r");
-    //FILE *fpPattern = fopen("./test.txt", "r");
     FILE* fpWords = fopen("./words-98w.txt", "r");
-    //FILE *fpWords = fopen("./test.txt", "r");
     FILE* fpResults = fopen("./bplus_search/result.txt", "a");
 
     if (fpPattern == NULL || fpWords == NULL || fpResults == NULL)

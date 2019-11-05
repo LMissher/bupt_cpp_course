@@ -88,7 +88,7 @@ void *util_radix_tree_create(int preallocate)
 
     tree->free = NULL;
 
-    tree->root = util_radix_alloc(tree);//����һ�����
+    tree->root = util_radix_alloc(tree);
     if (tree->root == NULL) {
         return NULL;
     }
@@ -283,7 +283,6 @@ int main(int argc, char *argv[])
 	double pp;
 	char str[128];
 	FILE* f1 = fopen("./patterns-127w.txt", "rt");
-	//fscanf(f1, "%s", str);
 	while (!feof(f1)) {
 		fscanf(f1, "%s", str);
 		ret = util_radix32tree_insert(tree, str, MASK, str);
@@ -302,7 +301,7 @@ int main(int argc, char *argv[])
 			fprintf(f3, "%s no\n", ptr);
 	}
 	printf("%d %d", count,sum);
-	fprintf(f3, "%d %d %d %d %d \n", nodeNum,size/64, cmpNum, sum,count);
+	fprintf(f3, "%d %d %d %d %d \n", nodeNum,size/1024, cmpNum/1000, sum,count);
 	fclose(f3);
 	fclose(f2);
     util_radix_tree_destroy(tree);

@@ -100,17 +100,6 @@ void my_error_handeler(int error_code) {
     exit(0);
 }
 
-void *create_pack_node() {
-    radix4_node_pack *new_node = (radix4_node_pack *) bupt_malloc(sizeof(radix4_node_pack));
-    new_node->word = NULL;
-    new_node->bit_flag = 0;
-    new_node->child1 = NULL;
-    new_node->child2 = NULL;
-    new_node->child3 = NULL;
-    new_node->child4 = NULL;
-    global_stats.treenodenum++;
-    return new_node;
-}
 
 void *create_node() {
     radix4_node *new_node = (radix4_node *) bupt_malloc(sizeof(radix4_node));
@@ -204,22 +193,13 @@ void insert_node(radix4_node *tree, const char *str, int len) {               //
             flag_get_which_word++;
         }
 
-#if notok
-        uint8_t test0=0x00,test1=0x00,test2=0x00;
-        test2=str[flag_get_which_word]&0Xff;
-        test1=flag << flag_get_bit_pos;
-        test0=((str[flag_get_which_word]&0Xff) & (flag << flag_get_bit_pos)) >> flag_get_bit_pos;
-#endif
-
         switch (((str[flag_get_which_word] & 0Xff) & (flag << flag_get_bit_pos)) >> flag_get_bit_pos) {
             case 0:
                 if (node->child1 == NULL) {
                     new_node = create_node();
                     node->child1 = new_node;
                 }
-#if notok
-                printf("0");
-#endif
+
                 node = node->child1;
                 break;
             case 1:
@@ -227,9 +207,7 @@ void insert_node(radix4_node *tree, const char *str, int len) {               //
                     new_node = create_node();
                     node->child2 = new_node;
                 }
-#if notok
-                printf("1");
-#endif
+
                 node = node->child2;
                 break;
             case 2:
@@ -237,9 +215,6 @@ void insert_node(radix4_node *tree, const char *str, int len) {               //
                     new_node = create_node();
                     node->child3 = new_node;
                 }
-#if notok
-                printf("2");
-#endif
                 node = node->child3;
                 break;
             case 3:
@@ -247,9 +222,7 @@ void insert_node(radix4_node *tree, const char *str, int len) {               //
                     new_node = create_node();
                     node->child4 = new_node;
                 }
-#if notok
-                printf("3");
-#endif
+
                 node = node->child4;
                 break;
             default:
@@ -258,68 +231,12 @@ void insert_node(radix4_node *tree, const char *str, int len) {               //
         count_23++;
         flag_get_bit_pos -= 2;
     }
-#if notok
-    printf("\n");
-#endif
     if (node->value == 0) {
         node->value = 1;
         global_stats.memsize += sizeof(char);
     }
 }
 
-int find_word(radix4_node *tree, const char *str, int len) {
-    int count_23 = 0, flag_get_bit_pos = 8, flag_get_which_word = -1;
-    uint8_t flag = 0x03;
-    radix4_node *node = tree;
-    while (count_23 != (len - 1) * 4) {
-        if (count_23 % 4 == 0) {
-            flag_get_bit_pos = 8;
-            flag_get_bit_pos -= 2;
-            flag_get_which_word++;
-        }
-
-#if notok
-        uint8_t test0=0x00,test1=0x00,test2=0x00;
-        test2=str[flag_get_which_word]&0Xff;
-        test1=flag << flag_get_bit_pos;
-        test0=((str[flag_get_which_word]&0Xff) & (flag << flag_get_bit_pos)) >> flag_get_bit_pos;
-#endif
-
-        switch (((str[flag_get_which_word] & 0Xff) & (flag << flag_get_bit_pos)) >> flag_get_bit_pos) {
-            case 0:
-                if (node->child1 == NULL) {
-                    return 0;
-                }
-                node = node->child1;
-                break;
-            case 1:
-                if (node->child2 == NULL) {
-                    return 0;
-                }
-                node = node->child2;
-                break;
-            case 2:
-                if (node->child3 == NULL) {
-                    return 0;
-                }
-                node = node->child3;
-                break;
-            case 3:
-                if (node->child4 == NULL) {
-                    return 0;
-                }
-                node = node->child4;
-                break;
-            default:
-                my_error_handeler(0);
-        }
-        count_23++;
-        flag_get_bit_pos -= 2;
-        global_stats.cmpnum++;
-    }
-    if (node->value != 0 && node->value == 1)return 1;
-    else return 0;
-}
 
 void delet_tree(radix4_node *tree) {
     if (tree->child1 != NULL)delet_tree(tree->child1);
@@ -333,7 +250,6 @@ FILE *fp_words, *fp_patterns, *fp_result;
 
 int main() {
     char buf_words[MAX_LINE], buf_patterns[MAX_LINE];
-//    FILE *fp_words,*fp_patterns,*fp_result;
     int len_words, len_patterns;
     int judge = 0;
     int i = 0, n = 0;
