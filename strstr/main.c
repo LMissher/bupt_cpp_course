@@ -5,7 +5,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
-//#define STRING_CHARACTER_NUMBER 9199
+// #define STRING_CHARACTER_NUMBER 9199
 #define STRING_CHARACTER_NUMBER 919943483
 #define PATTERN_WORD_NUMBER 1500
 #define PATTERN_WORD_LENGTH 128
@@ -13,7 +13,7 @@
 typedef struct Result Result;
 
 struct Result {
-    int cmpNum;
+    long long cmpNum;
     int memOccupy;
     int correctWordNum;
     int totalWordNum;
@@ -46,47 +46,13 @@ void *buptMalloc(size_t size)
 
 void clearSuffix(char* line)
 {
-    char * find = strchr(line, '\n');          //查找换行符
-    if(find)                            //如果find不为空指针
+    char * find = strchr(line, '\n');         
+    if(find)                            
         *find = '\0';
 }
 
- int division(Pattern* list, int left, int right) {
-    // 以最左边的数(left)为基准
-    int base = list[left].matchCount;
-    while (left < right) {
-        // 从序列右端开始，向左遍历，直到找到小于base的数
-        while (left < right && list[right].matchCount >= base)
-            right--;
-        // 找到了比base小的元素，将这个元素放到最左边的位置
-        list[left] = list[right];
-
-        // 从序列左端开始，向右遍历，直到找到大于base的数
-        while (left < right && list[left].matchCount <= base)
-            left++;
-        // 找到了比base大的元素，将这个元素放到最右边的位置
-        list[right].matchCount = list[left].matchCount;
-    }
-
-    // 最后将base放到left位置。此时，left位置的左侧数值应该都比left小；
-    // 而left位置的右侧数值应该都比left大。
-    list[left].matchCount = base;
-    return left;
-}
-
- void quickSort(Pattern* list, int left, int right){
-
-    // 左下标一定小于右下标，否则就越界了
-    if (left < right) {
-        // 对数组进行分割，取出下次分割的基准标号
-        int base = division(list, left, right);
-
-        // 对“基准标号“左侧的一组数值进行递归的切割，以至于将这些数值完整的排序
-        quickSort(list, left, base - 1);
-
-        // 对“基准标号“右侧的一组数值进行递归的切割，以至于将这些数值完整的排序
-        quickSort(list, base + 1, right);
-    }
+int cmp_func (const void* a, const void* b) {
+    return ( (*(Pattern*) a).matchCount - (*(Pattern*) b).matchCount );
 }
 
 int main() {
@@ -103,7 +69,7 @@ int main() {
     char* stringLines = (char*) buptMalloc( STRING_CHARACTER_NUMBER);
     while  (!feof(fpString)) {
         fgets(stringLines, (int) STRING_CHARACTER_NUMBER, fpString);
-        clearSuffix(stringLines);
+        // clearSuffix(stringLines);
     }
     //only 0~1499 are available
     Pattern *patternLines = (Pattern *) buptMalloc((sizeof(int) + PATTERN_WORD_LENGTH) * PATTERN_WORD_NUMBER);
@@ -112,7 +78,7 @@ int main() {
     while (!feof(fpPattern))
     {
         fgets(patternLine, PATTERN_WORD_LENGTH, fpPattern);
-        clearSuffix(patternLine);
+        // clearSuffix(patternLine);
         memccpy(patternLines[i].pattern, patternLine, 0, PATTERN_WORD_LENGTH);
         patternLines[i].matchCount = 0;
         i++;
@@ -127,7 +93,7 @@ int main() {
             char m_string_char = stringLines[m];
             for (int o = 0; o < PATTERN_WORD_LENGTH; o++) {
                 char o_word_char =  patternLines[n].pattern[o];
-                if (o_word_char == patternLines[n].pattern[127]) { // meet with the word end
+                if (o_word_char == patternLines[22].pattern[8]) { // meet with the word end
                     // if still matched
                     // let's go with the next character of string
                     if (flag_word_matched == 1) {
@@ -135,7 +101,10 @@ int main() {
                     }
                     break;
                 }
-                if (char_cmp(m_string_char, o_word_char) == 0) {
+                if (m + o > STRING_CHARACTER_NUMBER) {
+                    break;
+                }
+                if (char_cmp(stringLines[m + o], o_word_char) == 0) {
                     // if matched, assign flag to 1
                     flag_word_matched = 1;
                 } else {
@@ -146,14 +115,18 @@ int main() {
                 }
             }
         }
+        if (n % (PATTERN_WORD_NUMBER / 3) == 0) {
+            printf("first/second/last of all patterns.\n");
+        }
     }
-
-    quickSort(patternLines, 0, PATTERN_WORD_NUMBER - 1);
+    qsort(patternLines, PATTERN_WORD_NUMBER, sizeof(Pattern), cmp_func);
+    // quickSort(patternLines, 0, PATTERN_WORD_NUMBER - 1);
     for (int ii = PATTERN_WORD_NUMBER - 1; ii >= 0; ii--) {
+        clearSuffix(patternLines[ii].pattern);
         fprintf(fpResults, "%s %d\n", patternLines[ii].pattern, patternLines[ii].matchCount);
     }
 
-    fprintf(fpResults, "%d %d\n", result.cmpNum, result.memOccupy / 1024);
+    fprintf(fpResults, "%lld %d\n", result.cmpNum / 1000, result.memOccupy / 1024);
     fclose(fpString);
     fclose(fpPattern);
     fclose(fpResults);
