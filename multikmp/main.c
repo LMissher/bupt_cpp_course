@@ -424,7 +424,7 @@ int main()
         deleteNode(&heap);
     }
 
-    fprintf(fpResults, "%lld %lld", global_stats.mem / 1024, global_stats.cmpnum / 1000);
+    fprintf(fpResults, "%lld %lld", global_stats.cmpnum / 1000, global_stats.mem / 1024);
     fclose(fpPattern);
     fclose(fpString);
     fclose(fpResults);
