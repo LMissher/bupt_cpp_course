@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.10)
 project(bupt_cpp_course)
 
 set(CMAKE_C_FLAGS "-std=c99")
@@ -17,6 +17,7 @@ add_executable(ac_auto  ac_auto/main.c)
 add_executable(zjl_cpp zjl_cpp/main.c)
 add_executable(bcrawler bcrawler/bcrawler.c)
 add_executable(pagerank pagerank/pagerank.c)
+add_executable(new_pagerank pagerank/pagerank.c)
 
 find_package(Threads REQUIRED)
 target_link_libraries(bcrawler Threads::Threads)
